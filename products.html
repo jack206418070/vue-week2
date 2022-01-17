@@ -24,7 +24,7 @@
                     </div>
                     <div class="form-control w-50">
                         <label for="category">產品分類</label>
-                        <select id="category" v-model="tempProduct.categroy">
+                        <select id="category" v-model="tempProduct.category">
                             <option value="" disabled>請選擇一個分類</option>
                             <option :value="`${item}類別`" v-for="item in categoryArr" :key="item">{{ item }}</option>
                         </select>

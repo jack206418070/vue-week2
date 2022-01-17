@@ -9,7 +9,7 @@ const app = createApp({
             is_add: false,
             is_edit: false,
             is_loading: false,
-            tempProduct:{},
+            tempProduct:{is_enabled: 0},
             products: [],
             editTempProduct: {}
         }
@@ -60,7 +60,7 @@ const app = createApp({
                 }) 
         },
         clearProduct(type){
-            this.tempProduct = {}
+            this.tempProduct = {is_enabled: 0}
             type === 'add' ? this.is_add = false : this.is_edit = false;
         },
         upload(){
