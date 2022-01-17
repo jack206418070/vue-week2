@@ -22,7 +22,7 @@ createApp({
                 .then((res) => {
                     const { token, expired } = res.data;
                     document.cookie = `hexToken=${token}; expires=${ new Date(expired) }`;
-                    document.location = `/products.html`;
+                    document.location = `./products.html`;
                 })
                 .catch((err) => {
                     console.dir(err);
