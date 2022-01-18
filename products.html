@@ -17,8 +17,7 @@
                 @loading="loadingHandler" 
                 @add="addProductHandler" 
                 @edit="editProduct"
-                :class="{ 'hide': modalControl.is_add === false || modalControl.is_edit === false,
-                          'show': modalControl.is_add === true || modalControl.is_edit === true}"
+                v-if="modalControl.is_add === true || modalControl.is_edit === true"
         >
             <template #card-title="{modalTitle}">
                 <h2>{{ modalTitle }}</h2>
