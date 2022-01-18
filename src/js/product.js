@@ -23,7 +23,10 @@ const app = createApp({
                     console.log(res.data);
                 })
                 .catch((err) => {
-                    console.dir(err.response);
+                    if(err){
+                        alert('驗證過期或者失敗');
+                        document.location = `./index.html`;
+                    }
                 })
         },
         getProducts(){
@@ -31,9 +34,10 @@ const app = createApp({
             this.tempProduct = {};
             axios.get(`${this.apiUrl}/api/${this.path}/admin/products`)
                 .then((res) => {
-                    this.products = res.data.products;
-                    console.log(this.products);
-                    this.is_loading = false;
+                    if(res.data.success) {
+                        this.products = res.data.products;
+                        this.is_loading = false;
+                    }
                 })
                 .catch((err) => {
                     console.dir(err);
@@ -45,8 +49,9 @@ const app = createApp({
             const data = {data:{...dataList}};
             axios.post(`${this.apiUrl}/api/${this.path}/admin/product`, data)
                 .then((res) => {
-                    this.getProducts();
-                    console.log(res)
+                    if(res.data.success){
+                        this.getProducts();
+                    }
                 })
                 .catch((err) => {
                     console.log(err.response);
@@ -58,7 +63,9 @@ const app = createApp({
             this.is_loading = true;
             axios.delete(`${this.apiUrl}/api/${this.path}/admin/product/${id}`)
                 .then((res) => {
-                    this.getProducts();
+                    if(res.data.success){
+                        this.getProducts();
+                    }
                 })
                 .catch((err) => {
                     console.log(err.response);
@@ -68,32 +75,16 @@ const app = createApp({
             this.tempProduct = {is_enabled: 0}
             type === 'add' ? this.is_add = false : this.is_edit = false;
         },
-        upload(){
-            const fileInput = document.querySelector('#file');
-            const file = fileInput.files[0];
-            console.log(file);
-            const formData = new FormData();
-            formData.append('file-to-upload', file);
-            this.is_loading = true;
-            axios.post(`${this.apiUrl}/api/${this.path}/admin/upload`, formData)
-                .then((res) => {
-                    this.tempProduct.imageUrl == undefined ?  this.tempProduct.imageUrl = res.data.imageUrl 
-                        : this.editTempProduct.imageUrl = res.data.imageUrl;
-                    this.is_loading = false;
-                })
-                .catch(err => {
-                    console.log(err.response);
-                })
-        },
         editProduct(id,dataList){
             this.is_loading = true;
             this.modalControl.is_edit = false;
             const data = {data:{...dataList}}
-            console.log(data);
             axios.put(`${this.apiUrl}/api/${this.path}/admin/product/${id}`,data)
                 .then((res) => {
-                    this.getProducts();
-                    this.editTempProduct = {};
+                    if(res.data.success){
+                        this.getProducts();
+                        this.editTempProduct = {};
+                    }
                 })
                 .catch(err => {
                     console.dir(err);
@@ -131,17 +122,18 @@ app.component('modal',{
         upload(){
             const fileInput = document.querySelector('#file');
             const file = fileInput.files[0];
-            console.log(file);
             const formData = new FormData();
             formData.append('file-to-upload', file);
             this.$emit('loading');
             axios.post(`${this.apiUrl}/api/${this.path}/admin/upload`, formData)
                 .then((res) => {
-                    this.tempProduct.imageUrl = res.data.imageUrl;
-                    this.$emit('loading');
+                    if(res.data.success){
+                        this.tempProduct.imageUrl = res.data.imageUrl;
+                        this.$emit('loading');
+                    }
                 })
                 .catch(err => {
-                    console.log(err.response);
+                    console.dir(err.response);
                 })
         },
         editProduct(id, data){

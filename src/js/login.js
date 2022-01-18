@@ -30,7 +30,7 @@ const app = createApp({
                         document.location = `./products.html`;
                     })
                     .catch((err) => {
-                        console.dir(err);
+                        alert('帳號或密碼錯誤！');
                         this.is_err = 1;
                     })
             }else{
