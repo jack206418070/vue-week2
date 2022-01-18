@@ -18,15 +18,14 @@ const app = createApp({
     },
     methods: {
         checkLogin(){
+            this.is_loading = true;
             axios.post(`${this.apiUrl}/api/user/check`)
                 .then((res) => {
-                    console.log(res.data);
+                    this.getProducts();
                 })
                 .catch((err) => {
-                    if(err){
-                        alert('驗證過期或者失敗');
-                        document.location = `./index.html`;
-                    }
+                    alert(err.data.message);
+                    document.location = `./index.html`;
                 })
         },
         getProducts(){
@@ -102,7 +101,6 @@ const app = createApp({
         const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
         axios.defaults.headers.common['Authorization'] = token;
         this.checkLogin();
-        this.getProducts();
     }
 })
 
