@@ -6,8 +6,10 @@ const app = createApp({
             apiUrl: 'https://vue3-course-api.hexschool.io/v2',
             path: 'ginjack',
             categoryArr: ['蔬果','海鮮','肉品'],
-            is_add: false,
-            is_edit: false,
+            modalControl:{
+                is_add: false,
+                is_edit: false
+            },
             is_loading: false,
             tempProduct:{is_enabled: 0},
             products: [],
@@ -37,12 +39,14 @@ const app = createApp({
                     console.dir(err);
                 })
         },
-        addProductHandler() {
+        addProductHandler(dataList) {
             this.is_loading = true;
-            const data = {data:{...this.tempProduct}};
+            this.modalControl.is_add = false;
+            const data = {data:{...dataList}};
             axios.post(`${this.apiUrl}/api/${this.path}/admin/product`, data)
                 .then((res) => {
                     this.getProducts();
+                    console.log(res)
                 })
                 .catch((err) => {
                     console.log(err.response);
@@ -81,10 +85,11 @@ const app = createApp({
                     console.log(err.response);
                 })
         },
-        editProduct(id){
+        editProduct(id,dataList){
             this.is_loading = true;
-            this.is_edit = false;
-            const data = {data:{...this.editTempProduct}}
+            this.modalControl.is_edit = false;
+            const data = {data:{...dataList}}
+            console.log(data);
             axios.put(`${this.apiUrl}/api/${this.path}/admin/product/${id}`,data)
                 .then((res) => {
                     this.getProducts();
@@ -94,6 +99,13 @@ const app = createApp({
                     console.dir(err);
                 })
         },
+        closeModal(){
+            this.modalControl.is_add = false;
+            this.modalControl.is_edit = false;
+        },
+        loadingHandler(){
+            this.is_loading = !this.is_loading;
+        }
     },
     mounted(){
         const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/, "$1");
@@ -103,77 +115,113 @@ const app = createApp({
     }
 })
 
-// app.component('modal',{
-//     props: ['prop-data','category'],
-//     emits: ['close-modal','edit-product'],
-//     methods: {
-//         close(){
-//             this.$emit('close-modal');
-//         },
-//         edit(id){
-//             console.log(id);
-//             this.$emit('edit-product', id)
-//         }
-//     },
-//     template: `
-//     <div class="addProduct" style="z-index:1000">
-//     <h2>新增產品</h2>
-//     <form action="#">
-//         <div class="form-group">
-//             <div class="form-control w-50">
-//                 <label for="title">產品名稱</label>
-//                 <input v-model.trim="propData.title" id="title" class="w-100" type="text">
-//             </div>
-//             <div class="form-control w-50">
-//                 <label for="category">產品分類</label>
-//                 <select id="category" v-model="propData.category">
-//                     <option value="" disabled>請選擇一個分類</option>
-//                     <option :value="item" v-for="item in category" :key="item">{{ item }}</option>
-//                 </select>
-//             </div>
-//         </div>
-//         <div class="form-group">
-//             <div class="form-control w-50">
-//                 <label for="originPrice">原始價格</label>
-//                 <input v-model.number="propData.origin_price" id="originPrice" type="number">
-//             </div>
-//             <div class="form-control w-50">
-//                 <label for="price">販售價格</label>
-//                 <input v-model.number="propData.price" id="price" type="number">
-//             </div>
-//         </div>
-//         <div class="form-group">
-//             <div class="form-control w-50">
-//                 <div class="input-checkbox">
-//                     <p class="mb-2">是否啟用</p>
-//                     <div class="toggle">
-//                     </div>
-//                 </div>
-//             </div>
-//             <div class="form-control w-50">
-//                 <label for="unit">單位</label>
-//                 <input class="w-100" v-model="propData.unit" type="text" name="unit" id="unit">
-//             </div>
-//         </div>
-//         <div class="form-control">
-//             <label for="content">產品內容</label>
-//             <input v-model.trim="propData.content" type="text" id="content">
-//         </div>
-//         <div class="form-control">
-//             <label for="desc">產品描述</label>
-//             <textarea v-model.trim="propData.description" name="desc" id="desc" cols="30" rows="10"></textarea>
-//         </div>
-//         <div class="form-control">
-//             <!--暫時不綁 model -->
-//             <label for="file">產品圖片</label>
-//         </div>
-//     </form>
-//     <div class="btn-group bg--dark--secondary">
-//         <a @click.prevent="close" class="btn btn--danger" href="#">取消</a>
-//         <a @click.prevent="edit(propData.id)" class="btn btn--success" href="#">修改商品</a>
-//     </div>
-// </div>
-//     `
-// })
+
+app.component('modal',{
+    emits: ['close-modal','loading','add','edit'],
+    props:['modaltype','product', 'category'],
+    data(){
+        return{
+            modalTitle: '',
+            tempProduct: {},
+            apiUrl: 'https://vue3-course-api.hexschool.io/v2',
+            path: 'ginjack',
+        }
+    },
+    methods:{
+        upload(){
+            const fileInput = document.querySelector('#file');
+            const file = fileInput.files[0];
+            console.log(file);
+            const formData = new FormData();
+            formData.append('file-to-upload', file);
+            this.$emit('loading');
+            axios.post(`${this.apiUrl}/api/${this.path}/admin/upload`, formData)
+                .then((res) => {
+                    this.tempProduct.imageUrl = res.data.imageUrl;
+                    this.$emit('loading');
+                })
+                .catch(err => {
+                    console.log(err.response);
+                })
+        },
+        editProduct(id, data){
+            this.$emit('edit', id, data);
+        },
+        addProduct(data){
+            this.$emit('add', data);
+        }
+    },
+    created(){
+        if(this.modaltype.is_add === true){
+            this.modalTitle = '新增產品';
+            this.tempProduct = {...this.product[0]};
+        }else{
+            this.modalTitle = '編輯產品';
+            this.tempProduct = {...this.product[1]};
+        }
+    },
+    template: `
+    <div class="addProduct" style="z-index:100">
+    <slot name="card-title" :modalTitle="modalTitle"></slot>
+    <form action="#">
+        <div class="form-group">
+            <div class="form-control w-50">
+                <label for="title">產品名稱</label>
+                <input id="title" class="w-100" type="text" v-model="tempProduct.title">
+            </div>
+            <div class="form-control w-50">
+                <label for="category">產品分類</label>
+                <select id="category" v-model="tempProduct.category">
+                    <option value="" disabled>請選擇一個分類</option>
+                    <template v-for="item in category" :key="item">
+                        <option :value="item" >{{ item }}</option>
+                    </template>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="form-control w-50">
+                <label for="originPrice">原始價格</label>
+                <input id="originPrice" type="number" v-model.number="tempProduct.origin_price">
+            </div>
+            <div class="form-control w-50">
+                <label for="price">販售價格</label>
+                <input id="price" type="number" v-model.number="tempProduct.price">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="form-control w-50">
+                <div class="input-checkbox">
+                    <p class="mb-2">是否啟用</p>
+                    <div class="toggle" @click="tempProduct.is_enabled == 0 ? tempProduct.is_enabled = 1 : tempProduct.is_enabled = 0" :class="{'active': tempProduct.is_enabled == 1}">
+                    </div>
+                </div>
+            </div>
+            <div class="form-control w-50">
+                <label for="unit">單位</label>
+                <input class="w-100"  type="text" name="unit" id="unit" v-model="tempProduct.unit">
+            </div>
+        </div>
+        <div class="form-control">
+            <label for="content">產品內容</label>
+            <input type="text" id="content" v-model="tempProduct.content">
+        </div>
+        <div class="form-control">
+            <label for="desc">產品描述</label>
+            <textarea name="desc" id="desc" cols="30" rows="10" v-model="tempProduct.description"></textarea>
+        </div>
+        <div class="form-control">
+            <label for="file">產品圖片</label>
+            <input @change="upload" type="file" class="bg--white" id="file" name="filename"  placeholder="請輸入圖片連結">
+        </div>
+    </form>
+    <div class="btn-group bg--dark--secondary">
+        <a @click.prevent="$emit('close-modal')"  class="btn btn--danger" href="#">取消</a>
+        <a v-if="modalTitle === '新增產品'" @click.prevent="addProduct(tempProduct)"  class="btn btn--success" href="#">新增產品</a>
+        <a v-else @click.prevent="editProduct(tempProduct.id, tempProduct)"  class="btn btn--success" href="#">修改產品</a>
+    </div>
+</div>
+    `
+})
 
 app.mount('#app');

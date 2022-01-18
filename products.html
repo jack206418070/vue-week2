@@ -10,73 +10,14 @@
 <body style="background: url(./src/img/bg_bggenerator_com.jpg) center center no-repeat; background-size: cover;">
     
     <div id="app">
-        <!-- <modal :prop-data="editTempProduct" v-if="editTempProduct.id"></modal> -->
+        <modal v-if="modalControl.is_add || modalControl.is_edit" :modaltype="modalControl" :product="[tempProduct, editTempProduct]" :category = "categoryArr" @close-modal="closeModal" @loading="loadingHandler" @add="addProductHandler" @edit="editProduct">
+            <template #card-title="{modalTitle}">
+                <h2>{{ modalTitle }}</h2>
+            </template>
+        </modal>
         <div v-if="is_loading" class="loading d-flex align-items-center">
             <div class="loading-item "></div>
         </div>
-        <div class="addProduct" :class="{'hide':is_add === false, 'show': is_add === true}">
-            <h2>新增產品</h2>
-            <form action="#">
-                <div class="form-group">
-                    <div class="form-control w-50">
-                        <label for="title">產品名稱</label>
-                        <input v-model.trim="tempProduct.title" id="title" class="w-100" type="text">
-                    </div>
-                    <div class="form-control w-50">
-                        <label for="category">產品分類</label>
-                        <select id="category" v-model="tempProduct.category">
-                            <option value="" disabled>請選擇一個分類</option>
-                            <option :value="`${item}類別`" v-for="item in categoryArr" :key="item">{{ item }}</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="form-control w-50">
-                        <label for="originPrice">原始價格</label>
-                        <input v-model.number="tempProduct.origin_price" id="originPrice" type="number">
-                    </div>
-                    <div class="form-control w-50">
-                        <label for="price">販售價格</label>
-                        <input v-model.number="tempProduct.price" id="price" type="number">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="form-control w-50">
-                        <div class="input-checkbox">
-                            <p class="mb-2">是否啟用</p>
-                            <div class="toggle" @click="tempProduct.is_enabled == 0 ? tempProduct.is_enabled = 1 : tempProduct.is_enabled = 0" :class="{'active': tempProduct.is_enabled == 1}">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-control w-50">
-                        <label for="unit">單位</label>
-                        <input class="w-100" v-model="tempProduct.unit" type="text" name="unit" id="unit">
-                    </div>
-                </div>
-                <div class="form-control">
-                    <label for="content">產品內容</label>
-                    <input v-model.trim="tempProduct.content" type="text" id="content">
-                </div>
-                <div class="form-control">
-                    <label for="desc">產品描述</label>
-                    <textarea v-model.trim="tempProduct.description" name="desc" id="desc" cols="30" rows="10"></textarea>
-                </div>
-                <div class="form-control">
-                    <!--暫時不綁 model -->
-                    <label for="file">產品圖片</label>
-                    <input @change="upload" type="file" class="bg--white" id="file" name="filename" multiple="multiple" placeholder="請輸入圖片連結">
-                </div>
-                <!-- <div class="form-control">
-                    <label for="imgaeTemp">產品圖片(URL)</label>
-                    <input v-model="tempProduct.imageUrl" type="text" class="bg-white" id="imgaeTemp">
-                </div> -->
-            </form>
-            <div class="btn-group bg--dark--secondary">
-                <a @click.prevent="clearProduct('add')" class="btn btn--danger" href="#">取消</a>
-                <a @click.prevent="addProductHandler" class="btn btn--success" href="#">新增商品</a>
-            </div>
-        </div>
-        <div class="editProduct" :class="{'hide':is_edit === false, 'show': is_edit === true}">
             <h2>修改產品</h2>
             <form action="#">
                 <div class="form-group">
@@ -124,24 +65,19 @@
                     <textarea v-model.trim="editTempProduct.description" name="desc" id="desc" cols="30" rows="10"></textarea>
                 </div>
                 <div class="form-control">
-                    <!--暫時不綁 model -->
                     <label for="file">產品圖片</label>
                     <input @change="upload" type="file" class="bg--white" id="file" name="filename" multiple="multiple" placeholder="請輸入圖片連結">
                 </div>
-                <!-- <div class="form-control">
-                    <label for="imgaeeditTemp">產品圖片(URL)</label>
-                    <input v-model="editTempProduct.imageUrl" type="text" class="bg-white" id="imgaeeditTemp">
-                </div> -->
             </form>
             <div class="btn-group bg--dark--secondary">
                 <a @click.prevent="clearProduct('edit')" class="btn btn--danger" href="#">取消</a>
                 <a @click.prevent="editProduct(editTempProduct.id)" class="btn btn--success" href="#">修改商品</a>
             </div>
-        </div>
+        </div> -->
         <div class="container d-flex">
             <div class="total__product w-100 d-flex align-items-center">
                 <p class="w-40">目前有 {{ products.length }} 樣商品</p>
-                <a @click.prevent="clearProduct('add'); is_add = true" class="btn btn--success w-10" href="#">建立產品</a>
+                <a @click.prevent="clearProduct('add'); modalControl.is_add = true" class="btn btn--success w-10" href="#">建立產品</a>
             </div>
             <div class="product w-50">
                 <ul>
@@ -163,13 +99,13 @@
                                 <li class="w-15 d-sm-none">${{ item.origin_price }}</li>
                                 <li class="w-15">${{ item.price }}</li>
                                 <li class="d-flex jy-content-between jy-content-sm-center w-30 px-4">
-                                    <div @click="item.is_enabled == 0 ? item.is_enabled = 1 : item.is_enabled = 0; editTempProduct = {...item}; editProduct(item.id)" class="toggle" :class="{ 'active': item.is_enabled == 1 }">
+                                    <div @click="item.is_enabled == 0 ? item.is_enabled = 1 : item.is_enabled = 0; editProduct(item.id, {...item})" class="toggle" :class="{ 'active': item.is_enabled == 1 }">
                                     </div>
                                     <p :class="{ 'active': item.is_enabled == 1 }">{{ item.is_enabled == 1 ? '啟用' : '未啟用' }}</p>
                                 </li>
                                 <li class="w-40 d-flex jy-content-around flex-wrap">
                                     <a @click.prevent="tempProduct = item" href="#" class="btn btn--success w-30">查看</a>
-                                    <a @click.prevent="editTempProduct = {...item}; is_edit= true" class="btn btn--success w-30" href="#">編輯</a>
+                                    <a @click.prevent="editTempProduct = {...item}; modalControl.is_edit= true" class="btn btn--success w-30" href="#">編輯</a>
                                     <a @click.prevent="deleteProduct(item.id)" class="btn btn--danger w-30" href="#">刪除</a>
                                 </li>
                             </ul>
