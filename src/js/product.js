@@ -30,6 +30,7 @@ const app = createApp({
             axios.get(`${this.apiUrl}/api/${this.path}/admin/products`)
                 .then((res) => {
                     this.products = res.data.products;
+                    console.log(this.products);
                     this.is_loading = false;
                 })
                 .catch((err) => {
@@ -69,10 +70,12 @@ const app = createApp({
             console.log(file);
             const formData = new FormData();
             formData.append('file-to-upload', file);
+            this.is_loading = true;
             axios.post(`${this.apiUrl}/api/${this.path}/admin/upload`, formData)
                 .then((res) => {
-                    this.tempProduct.imageUrl = res.data.imageUrl;
-                    console.log(res.data);
+                    this.tempProduct.imageUrl == undefined ?  this.tempProduct.imageUrl = res.data.imageUrl 
+                        : this.editTempProduct.imageUrl = res.data.imageUrl;
+                    this.is_loading = false;
                 })
                 .catch(err => {
                     console.log(err.response);
@@ -82,18 +85,15 @@ const app = createApp({
             this.is_loading = true;
             this.is_edit = false;
             const data = {data:{...this.editTempProduct}}
-            // this.closeModal();
             axios.put(`${this.apiUrl}/api/${this.path}/admin/product/${id}`,data)
                 .then((res) => {
                     this.getProducts();
+                    this.editTempProduct = {};
                 })
                 .catch(err => {
                     console.dir(err);
                 })
         },
-        // closeModal(){
-        //     this.editTempProduct = {};
-        // }
     },
     mounted(){
         const token = document.cookie.replace(/(?:(?:^|.*;\s*)hexToken\s*\=\s*([^;]*).*$)|^.*$/, "$1");

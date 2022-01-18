@@ -17,7 +17,7 @@
                     </div>
                     <div class="form-control">
                         <label for="email">帳號</label>
-                        <input v-model="username" type="eamil" id="email" name="email">
+                        <input @change="checkEmail" v-model="username" :class="{'fail': veeFail.email === 1}" type="eamil" id="email" name="email">
                     </div>
                     <div class="form-control">
                         <label for="password">密碼</label>

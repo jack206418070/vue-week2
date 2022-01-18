@@ -1247,6 +1247,10 @@ body {
   border: 3px solid gray;
 }
 
+.login__banner form input.fail {
+  border: 3px solid lightcoral;
+}
+
 .login__banner .login__err {
   color: red;
   font-weight: bold;

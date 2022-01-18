@@ -163,7 +163,7 @@
                                 <li class="w-15 d-sm-none">${{ item.origin_price }}</li>
                                 <li class="w-15">${{ item.price }}</li>
                                 <li class="d-flex jy-content-between jy-content-sm-center w-30 px-4">
-                                    <div @click="item.is_enabled == 0 ? item.is_enabled = 1 : item.is_enabled = 0" class="toggle" :class="{ 'active': item.is_enabled == 1 }">
+                                    <div @click="item.is_enabled == 0 ? item.is_enabled = 1 : item.is_enabled = 0; editTempProduct = {...item}; editProduct(item.id)" class="toggle" :class="{ 'active': item.is_enabled == 1 }">
                                     </div>
                                     <p :class="{ 'active': item.is_enabled == 1 }">{{ item.is_enabled == 1 ? '啟用' : '未啟用' }}</p>
                                 </li>
