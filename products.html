@@ -10,7 +10,16 @@
 <body style="background: url(./src/img/bg_bggenerator_com.jpg) center center no-repeat; background-size: cover;">
     
     <div id="app">
-        <modal v-if="modalControl.is_add || modalControl.is_edit" :modaltype="modalControl" :product="[tempProduct, editTempProduct]" :category = "categoryArr" @close-modal="closeModal" @loading="loadingHandler" @add="addProductHandler" @edit="editProduct">
+        <modal  :modaltype="modalControl" 
+                :product="[tempProduct, editTempProduct]" 
+                :category = "categoryArr" 
+                @close-modal="closeModal" 
+                @loading="loadingHandler" 
+                @add="addProductHandler" 
+                @edit="editProduct"
+                :class="{ 'hide': modalControl.is_add === false || modalControl.is_edit === false,
+                          'show': modalControl.is_add === true || modalControl.is_edit === true}"
+        >
             <template #card-title="{modalTitle}">
                 <h2>{{ modalTitle }}</h2>
             </template>

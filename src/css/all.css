@@ -1135,7 +1135,7 @@ body {
   }
 }
 
-.addProduct, .editProduct {
+.productModal {
   position: absolute;
   width: 40%;
   background: #fff;
@@ -1151,55 +1151,55 @@ body {
 }
 
 @media (max-width: 1180px) {
-  .addProduct, .editProduct {
+  .productModal {
     width: 70% !important;
   }
 }
 
 @media (max-width: 415px) {
-  .addProduct, .editProduct {
+  .productModal {
     width: 90% !important;
   }
 }
 
-.addProduct.hide, .editProduct.hide {
+.productModal.hide {
   opacity: 0;
   z-index: -1;
 }
 
-.addProduct.show, .editProduct.show {
+.productModal.show {
   opacity: 1;
   z-index: 10;
 }
 
-.addProduct h2, .editProduct h2 {
+.productModal h2 {
   text-align: center;
   background: #FF6B6B;
   padding: 10px 0;
 }
 
-.addProduct form, .editProduct form {
+.productModal form {
   height: 600px;
   background: #F7FFF7;
   overflow-y: scroll;
 }
 
 @media (max-width: 768px) {
-  .addProduct form, .editProduct form {
+  .productModal form {
     height: 500px;
   }
 }
 
-.addProduct form label, .editProduct form label {
+.productModal form label {
   margin-bottom: 5px;
   display: block;
 }
 
-.addProduct form select, .editProduct form select {
+.productModal form select {
   -webkit-appearance: none !important;
 }
 
-.addProduct form input, .addProduct form select, .editProduct form input, .editProduct form select {
+.productModal form input, .productModal form select {
   display: block;
   padding: 10px 5px;
   outline: none;
@@ -1209,7 +1209,7 @@ body {
   transition: 0.1s;
 }
 
-.addProduct form input:focus, .addProduct form select:focus, .editProduct form input:focus, .editProduct form select:focus {
+.productModal form input:focus, .productModal form select:focus {
   outline: 3px solid gray;
 }
 

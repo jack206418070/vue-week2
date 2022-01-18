@@ -151,7 +151,7 @@ app.component('modal',{
         }
     },
     template: `
-    <div class="addProduct" style="z-index:100">
+    <div class="productModal">
     <slot name="card-title" :modalTitle="modalTitle"></slot>
     <form action="#">
         <div class="form-group">
