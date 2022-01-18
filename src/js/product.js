@@ -24,7 +24,7 @@ const app = createApp({
                     this.getProducts();
                 })
                 .catch((err) => {
-                    alert(err.data.message);
+                    alert('驗證碼失效或者錯誤');
                     document.location = `./index.html`;
                 })
         },
