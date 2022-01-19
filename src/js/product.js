@@ -142,7 +142,7 @@ app.component('modal',{
         }
     },
     created(){
-        if(this.modaltype.is_add === true){
+        if(this.modaltype.is_add){
             this.modalTitle = '新增產品';
             this.tempProduct = {...this.product[0]};
         }else{

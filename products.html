@@ -77,7 +77,7 @@
                         @loading="loadingHandler" 
                         @add="addProductHandler" 
                         @edit="editProduct"
-                        v-if="modalControl.is_add === true || modalControl.is_edit === true"
+                        v-if="modalControl.is_add || modalControl.is_edit"
                 >
                     <template #card-title="{modalTitle}">
                         <h2>{{ modalTitle }}</h2>
