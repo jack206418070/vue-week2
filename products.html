@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>產品列表</title>
     <link rel="stylesheet" href="./src/css/all.css" class="css">
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
 </head>
+
 <body>
-    <header class="d-flex jy-content-between align-items-center">
+    <div id="app">
+        <header class="d-flex jy-content-between align-items-center">
             <div class="logo">
                 <h1>LOGO</h1>
             </div>
@@ -19,66 +23,60 @@
                         <a href="#"><i class="fas fa-user-shield"></i></a>
                     </li>
                     <li>
-                       <a href="#"><i class="fas fa-bell"></i></a>
+                        <a href="#"><i class="fas fa-bell"></i></a>
                     </li>
                     <li>
-                        <a href="#"><i class="fas fa-sign-out-alt"></i></i></a>
+                        <a @click="logout" href="#"><i class="fas fa-sign-out-alt"></i></i></a>
                     </li>
                 </ul>
             </div>
-    </header>
+        </header>
 
-    <section class="d-flex">
-        <div class="side-menu">
-            <div class="admin-info d-flex align-items-center jy-content-center">
-                <img src="./user-13.jpeg" alt="">
-                <div class="admin-profile">
-                    <h3>GinJack</h3>
-                    <p>Front end developer</p>
+        <section class="d-flex">
+            <div class="side-menu">
+                <div class="admin-info d-flex align-items-center jy-content-center">
+                    <img src="./user-13.jpeg" alt="">
+                    <div class="admin-profile">
+                        <h3>GinJack</h3>
+                        <p>Front end developer</p>
+                    </div>
+                </div>
+                <ul>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="./products.html">
+                            <i class="fab fa-product-hunt"></i>
+                            <span>Products</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-border-all"></i>
+                            <span>Orders</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-ticket-alt"></i>
+                            <span>Coupon</span>
+                        </a>
+                    </li>
+                </ul>
+                <div class="side-toggle">
+                    <i class="fas fa-arrow-alt-circle-left"></i>
+                    <!-- <i class="fas fa-arrow-alt-circle-right"></i> -->
                 </div>
             </div>
-            <ul>
-                <li>
-                    <a href="#">
-                        <i class="fas fa-tachometer-alt"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="./products.html">
-                        <i class="fab fa-product-hunt"></i>
-                        <span>Products</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class="fas fa-border-all"></i>
-                        <span>Orders</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#">
-                        <i class="fas fa-ticket-alt"></i>
-                        <span>Coupon</span>
-                    </a>
-                </li>
-            </ul>
-            <div class="side-toggle">
-                <i class="fas fa-arrow-alt-circle-left"></i>
-                <!-- <i class="fas fa-arrow-alt-circle-right"></i> -->
-            </div>
-        </div>
-        <div class="content">
-            <div id="app">
-                <modal  :modaltype="modalControl" 
-                        :product="[tempProduct, editTempProduct]" 
-                        :category = "categoryArr" 
-                        @close-modal="closeModal" 
-                        @loading="loadingHandler" 
-                        @add="addProductHandler" 
-                        @edit="editProduct"
-                        v-if="modalControl.is_add || modalControl.is_edit"
-                >
+            <div class="content">
+
+                <modal :modaltype="modalControl" :product="[tempProduct, editTempProduct]" :category="categoryArr"
+                    @close-modal="closeModal" @loading="loadingHandler" @add="addProductHandler" @edit="editProduct"
+                    v-if="modalControl.is_add || modalControl.is_edit">
                     <template #card-title="{modalTitle}">
                         <h2>{{ modalTitle }}</h2>
                     </template>
@@ -86,11 +84,12 @@
                 <div v-if="is_loading" class="loading d-flex align-items-center">
                     <div class="loading-item "></div>
                 </div>
-        
+
                 <div class="container d-flex jy-content-center">
                     <div class="total__product w-80 d-flex align-items-center jy-content-between">
                         <p>目前有 {{ products.length }} 樣商品</p>
-                        <a @click.prevent="clearProduct('add'); modalControl.is_add = true" class="btn btn--success w-10" href="#">建立產品</a>
+                        <a @click.prevent="clearProduct('add'); modalControl.is_add = true"
+                            class="btn btn--success w-10" href="#">建立產品</a>
                     </div>
                     <div class="product w-80">
                         <ul>
@@ -105,21 +104,28 @@
                                     </ul>
                                 </div>
                             </li>
-                            <li v-for="(item, index) in products" :key="item.id" class="product__item d-flex jy-content-between" :class="{'bg--secondary': index % 2 == 1, 'bg--dark--secondary': index % 2 == 0}">
+                            <li v-for="(item, index) in products" :key="item.id"
+                                class="product__item d-flex jy-content-between"
+                                :class="{'bg--secondary': index % 2 == 1, 'bg--dark--secondary': index % 2 == 0}">
                                 <h3>{{ item.title }}</h3>
                                 <div class="info__group w-80">
                                     <ul class="d-flex fw-bold align-items-center">
                                         <li class="w-15 d-sm-none">${{ item.origin_price }}</li>
                                         <li class="w-15">${{ item.price }}</li>
                                         <li class="d-flex jy-content-center w-30 px-4">
-                                            <div @click="item.is_enabled == 0 ? item.is_enabled = 1 : item.is_enabled = 0; editProduct(item.id, {...item})" class="toggle" :class="{ 'active': item.is_enabled == 1 }">
+                                            <div @click="item.is_enabled == 0 ? item.is_enabled = 1 : item.is_enabled = 0; editProduct(item.id, {...item})"
+                                                class="toggle" :class="{ 'active': item.is_enabled == 1 }">
                                             </div>
-                                            <p :class="{ 'active': item.is_enabled == 1 }">{{ item.is_enabled == 1 ? '啟用' : '未啟用' }}</p>
+                                            <p :class="{ 'active': item.is_enabled == 1 }">{{ item.is_enabled == 1 ?
+                                                '啟用' : '未啟用' }}</p>
                                         </li>
                                         <li class="w-40 d-flex jy-content-around flex-wrap">
-                                            <a @click.prevent="tempProduct = item" href="#" class="btn btn--success w-30">查看</a>
-                                            <a @click.prevent="editTempProduct = {...item}; modalControl.is_edit= true" class="btn btn--success w-30" href="#">編輯</a>
-                                            <a @click.prevent="deleteProduct(item.id)" class="btn btn--danger w-30" href="#">刪除</a>
+                                            <a @click.prevent="tempProduct = item" href="#"
+                                                class="btn btn--success w-30">查看</a>
+                                            <a @click.prevent="editTempProduct = {...item}; modalControl.is_edit= true"
+                                                class="btn btn--success w-30" href="#">編輯</a>
+                                            <a @click.prevent="deleteProduct(item.id)" class="btn btn--danger w-30"
+                                                href="#">刪除</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -127,10 +133,11 @@
                         </ul>
                     </div>
                     <div v-if="tempProduct.id" class="card p-absolute">
-                      <div class="card__title">
+                        <div class="card__title">
                             <h3>單一產品內容</h3>
                             <div class="card__title__close">
-                                <a @click.prevent="tempProduct = { is_enabled : 0 }" href="#"><i class="fas fa-times"></i></a>
+                                <a @click.prevent="tempProduct = { is_enabled : 0 }" href="#"><i
+                                        class="fas fa-times"></i></a>
                             </div>
                         </div>
                         <div class="card__img">
@@ -148,23 +155,25 @@
                                 </div>
                                 <p>商品內容:{{ tempProduct.content }}</p>
                                 <div class="price d-flex">
-                                    <p class="origin__price"><span style="text-decoration: line-through; ">原價：${{ tempProduct.origin_price }}元</span></p>
+                                    <p class="origin__price"><span style="text-decoration: line-through; ">原價：${{
+                                            tempProduct.origin_price }}元</span></p>
                                     <p class="sale__price bg--primary"><span>特價：${{ tempProduct.price }}元</span></p>
                                 </div>
                             </div>
                         </div>
                         <div class="card__footer d-flex flex-wrap">
                             <template v-for="(image, key) in tempProduct.imagesUrl" :key="image">
-                                <img v-if="image"  :src="image" alt="tempProduct.title">
+                                <img v-if="image" :src="image" alt="tempProduct.title">
                             </template>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+    </div>
     </section>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.24.0/axios.min.js"></script>
     <script type="module" src="./src/js/product.js"></script>
 </body>
+
 </html>

@@ -28,6 +28,16 @@ const app = createApp({
                     document.location = `./index.html`;
                 })
         },
+        logout(){
+            axios.post(`${this.apiUrl}/logout`)
+                .then(res => {
+                    alert('登出成功');
+                    document.location = `./index.html`;
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+        },
         getProducts(){
             this.is_loading = true;
             this.tempProduct = {};
