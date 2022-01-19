@@ -79,6 +79,9 @@
   .jy-content-around{
       justify-content: space-around;
   }
+  .jy-content-center{
+      justify-content: center;
+  }
   .flex-wrap{
       flex-wrap: wrap;
   }
@@ -112,4 +115,7 @@
       @include mobile{
           display: none;
       }
+  }
+  .p-absolute{
+      position: absolute;
   }

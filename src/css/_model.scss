@@ -14,6 +14,21 @@
         background-color: #FF6B6B;
         padding: 10px 0;
         border-radius: 4px 4px 0 0;
+        position: relative;
+        &__close{
+            position: absolute;
+            top: 50%;
+            right: 2%;
+            transform: translate(-50%, -50%);
+            a{
+                display: block;
+                padding: 5px;
+                color: #111;
+                &:hover{
+                    color: #ccc;
+                }
+            }
+        }
     }
     &__img{
         background-color: #F7FFF7;
