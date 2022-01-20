@@ -158,7 +158,7 @@ app.component('modal',{
     },
     template: `
     <div class="productModal">
-    <slot name="card-title" :modalTitle="modalTitle"></slot>
+    <h2>{{ modalTitle }}</h2>
     <form action="#">
         <div class="form-group">
             <div class="form-control w-50">

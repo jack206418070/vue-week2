@@ -81,9 +81,6 @@
                        @loading="loadingHandler" 
                        @get-products="getProducts"
                        v-if="modalControl.is_add || modalControl.is_edit">
-                    <template #card-title="{modalTitle}">
-                        <h2>{{ modalTitle }}</h2>
-                    </template>
                 </modal>
                 <div v-if="is_loading" class="loading d-flex align-items-center">
                     <div class="loading-item "></div>
