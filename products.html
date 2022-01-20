@@ -74,9 +74,13 @@
             </div>
             <div class="content">
 
-                <modal :modaltype="modalControl" :product="[tempProduct, editTempProduct]" :category="categoryArr"
-                    @close-modal="closeModal" @loading="loadingHandler" @add="addProductHandler" @edit="editProduct"
-                    v-if="modalControl.is_add || modalControl.is_edit">
+                <modal :modaltype="modalControl" 
+                       :product="editTempProduct" 
+                       :category="categoryArr"
+                       @close-modal="closeModal" 
+                       @loading="loadingHandler" 
+                       @get-products="getProducts"
+                       v-if="modalControl.is_add || modalControl.is_edit">
                     <template #card-title="{modalTitle}">
                         <h2>{{ modalTitle }}</h2>
                     </template>

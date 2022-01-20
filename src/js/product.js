@@ -11,9 +11,9 @@ const app = createApp({
                 is_edit: false
             },
             is_loading: false,
-            tempProduct:{is_enabled: 0},
+            tempProduct:{},
             products: [],
-            editTempProduct: {}
+            editTempProduct: {is_enabled: 0}
         }
     },
     methods: {
@@ -21,7 +21,7 @@ const app = createApp({
             this.is_loading = true;
             axios.post(`${this.apiUrl}/api/user/check`)
                 .then((res) => {
-                    this.getProducts();
+                    if(res.data.success) this.getProducts();
                 })
                 .catch((err) => {
                     alert('驗證碼失效或者錯誤');
@@ -52,22 +52,6 @@ const app = createApp({
                     console.dir(err);
                 })
         },
-        addProductHandler(dataList) {
-            this.is_loading = true;
-            this.modalControl.is_add = false;
-            const data = {data:{...dataList}};
-            axios.post(`${this.apiUrl}/api/${this.path}/admin/product`, data)
-                .then((res) => {
-                    if(res.data.success){
-                        this.getProducts();
-                    }
-                })
-                .catch((err) => {
-                    console.log(err.response);
-                })
-            this.is_add = false;
-            this.clearProduct();
-        },
         deleteProduct(id){
             this.is_loading = true;
             axios.delete(`${this.apiUrl}/api/${this.path}/admin/product/${id}`)
@@ -83,21 +67,6 @@ const app = createApp({
         clearProduct(type){
             this.tempProduct = {is_enabled: 0}
             type === 'add' ? this.is_add = false : this.is_edit = false;
-        },
-        editProduct(id,dataList){
-            this.is_loading = true;
-            this.modalControl.is_edit = false;
-            const data = {data:{...dataList}}
-            axios.put(`${this.apiUrl}/api/${this.path}/admin/product/${id}`,data)
-                .then((res) => {
-                    if(res.data.success){
-                        this.getProducts();
-                        this.editTempProduct = {};
-                    }
-                })
-                .catch(err => {
-                    console.dir(err);
-                })
         },
         closeModal(){
             this.modalControl.is_add = false;
@@ -116,7 +85,7 @@ const app = createApp({
 
 
 app.component('modal',{
-    emits: ['close-modal','loading','add','edit'],
+    emits: ['close-modal','loading','add','getProducts'],
     props:['modaltype','product', 'category'],
     data(){
         return{
@@ -144,20 +113,47 @@ app.component('modal',{
                     console.dir(err.response);
                 })
         },
-        editProduct(id, data){
-            this.$emit('edit', id, data);
-        },
         addProduct(data){
             this.$emit('add', data);
+        },
+        editProduct(id){
+            this.$emit('loading');
+            const data = {data:{...this.tempProduct}}
+            this.$emit('close-modal');
+            axios.put(`${this.apiUrl}/api/${this.path}/admin/product/${id}`,data)
+                .then((res) => {
+                    if(res.data.success){
+                        this.$emit('getProducts');
+                        this.tempProduct = {};
+                    }
+                })
+                .catch(err => {
+                    console.dir(err);
+                })
+        },
+        addProduct() {
+            this.$emit('close-modal');
+            this.$emit('loading');
+            const data = {data:{...this.tempProduct}};
+            axios.post(`${this.apiUrl}/api/${this.path}/admin/product`, data)
+                .then((res) => {
+                    if(res.data.success){
+                        this.$emit('getProducts');
+                        this.tempProduct = {};
+                    }
+                })
+                .catch((err) => {
+                    console.log(err.response);
+                })
         }
     },
     created(){
         if(this.modaltype.is_add){
             this.modalTitle = '新增產品';
-            this.tempProduct = {...this.product[0]};
+            this.tempProduct = {is_enabled: 0};
         }else{
             this.modalTitle = '編輯產品';
-            this.tempProduct = {...this.product[1]};
+            this.tempProduct = {...this.product};
         }
     },
     template: `
@@ -217,8 +213,8 @@ app.component('modal',{
     </form>
     <div class="btn-group bg--dark--secondary">
         <a @click.prevent="$emit('close-modal')"  class="btn btn--danger" href="#">取消</a>
-        <a v-if="modalTitle === '新增產品'" @click.prevent="addProduct(tempProduct)"  class="btn btn--success" href="#">新增產品</a>
-        <a v-else @click.prevent="editProduct(tempProduct.id, tempProduct)"  class="btn btn--success" href="#">修改產品</a>
+        <a v-if="modalTitle === '新增產品'" @click.prevent="addProduct"  class="btn btn--success" href="#">新增產品</a>
+        <a v-else @click.prevent="editProduct(tempProduct.id)"  class="btn btn--success" href="#">修改產品</a>
     </div>
 </div>
     `

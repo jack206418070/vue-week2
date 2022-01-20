@@ -10,13 +10,13 @@ const app = createApp({
             is_err: 0,
             veeFail: {
                 email: 0,
-                passwrod: 0
+                password: 0
             }
         }
     },
     methods: {
         postSignIn() {
-            if (this.veeFail.email === 0 && this.veeFail.passwrod === 0 && this.username !== '' && this.password !== '') {
+            if (this.veeFail.email === 0 && this.veeFail.password === 0 && this.username !== '' && this.password !== '') {
                 const username = this.username;
                 const password = this.password;
                 const user = {
