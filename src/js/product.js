@@ -13,7 +13,7 @@ const app = createApp({
             is_loading: false,
             tempProduct:{},
             products: [],
-            editTempProduct: {is_enabled: 0}
+            editTempProduct: {}
         }
     },
     methods: {
@@ -74,6 +74,22 @@ const app = createApp({
         },
         loadingHandler(){
             this.is_loading = !this.is_loading;
+        },
+        editProduct(id){
+            this.is_loading = true;
+            this.editTempProduct.is_enabled = !this.editTempProduct.is_enabled;
+            const data = {data:{...this.editTempProduct}}
+            this.modalControl.is_add = false;
+            axios.put(`${this.apiUrl}/api/${this.path}/admin/product/${id}`,data)
+                .then((res) => {
+                    if(res.data.success){
+                        this.getProducts();
+                        this.editTempProduct = {};
+                    }
+                })
+                .catch(err => {
+                    console.dir(err);
+                })
         }
     },
     mounted(){
